@@ -2,6 +2,8 @@ import pyglet
 
 
 from constants import *
+from game import Truck
+from player import Player
 import resources
 from ui import GameUI
 
@@ -25,6 +27,12 @@ class App:
         )
         self.background.scale = 0.5
         self.game_ui = GameUI(batch, ui_group)
+        self.player = Player(batch, foreground_group)
+        self.trucks = [Truck(batch, foreground_group)]
+
+    def update(self, dt):
+        for truck in self.trucks:
+            truck.update(dt)
 
 
 @window.event
