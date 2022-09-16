@@ -8,7 +8,7 @@ import resources
 class Truck(pyglet.sprite.Sprite):
     def __init__(self, batch, group):
         super(Truck, self).__init__(
-            resources.truck_tex,
+            resources.truck_l_tex,
             x=25*CELL_SIZE, y=UI_HEIGHT, batch=batch, group=group
         )
         self.scale = 0.5
