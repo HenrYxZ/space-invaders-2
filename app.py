@@ -31,6 +31,7 @@ class App:
         self.factory = Factory(batch, foreground_group)
         self.mine = Mine(batch, foreground_group)
         self.trucks = [Truck(batch, foreground_group)]
+        window.push_handlers(self.player)
 
     def update(self, dt):
         for truck in self.trucks:
