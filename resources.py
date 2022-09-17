@@ -13,3 +13,6 @@ truck_tex = pyglet.resource.image("graphics/CamioncitoDer.png")
 truck_l_tex = pyglet.resource.image("graphics/CamioncitoIzq.png")
 mine_tex = pyglet.resource.image("graphics/Cristales.png")
 factory_tex = pyglet.resource.image("graphics/Fabrica.png")
+
+icon1 = pyglet.image.load("res/graphics/rocket-16.png")
+icon2 = pyglet.image.load("res/graphics/rocket-32.png")

@@ -12,6 +12,7 @@ window = pyglet.window.Window(
     WIDTH + UI_WIDTH, HEIGHT + UI_HEIGHT,
     caption="Space Invaders"
 )
+window.set_icon(resources.icon1, resources.icon2)
 batch = pyglet.graphics.Batch()
 background_group = pyglet.graphics.OrderedGroup(0)
 foreground_group = pyglet.graphics.OrderedGroup(1)
