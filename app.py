@@ -2,7 +2,7 @@ import pyglet
 
 
 from constants import *
-from game import Game, Factory, Mine, Truck
+from game import Enemy, Game, Factory, Mine, Truck
 from player import Player
 import resources
 from ui import GameUI
@@ -39,6 +39,8 @@ class App:
                 self.game.add_load
             )
         ]
+        self.enemies = [Enemy(self.game.level, batch, foreground_group)]
+        self.timer = 0
         self.resources_label = pyglet.text.Label(
             f"Resources: {self.mine.resources_left}",
             x=WIDTH+UI_WIDTH//2, y=400, anchor_x='center', anchor_y='center',
@@ -52,13 +54,13 @@ class App:
             batch=batch, group=ui_group
         )
         self.level_label = pyglet.text.Label(
-            f"Level: ${self.game.level}",
+            f"Level: {self.game.level}",
             x=WIDTH+UI_WIDTH//2, y=450, anchor_x='center', anchor_y='center',
             color=TEXT_COLOR, font_size=FONT_SIZE, bold=True,
             batch=batch, group=ui_group
         )
         self.time_label = pyglet.text.Label(
-            f"Time: ${self.game.time:d}",
+            f"Time: {int(self.game.time)}",
             x=WIDTH + UI_WIDTH // 2, y=300, anchor_x='center',
             anchor_y='center',
             color=TEXT_COLOR, font_size=FONT_SIZE, bold=True,
@@ -68,6 +70,12 @@ class App:
 
     def update(self, dt):
         self.game.update(dt)
+        self.timer += dt
+        if self.timer >= TIME_UNIT:
+            self.timer = 0
+            for enemy in self.enemies:
+                enemy.move()
+
         for truck in self.trucks:
             truck.update(dt)
         self.resources_label.text = f"Resources: {self.mine.resources_left}"
