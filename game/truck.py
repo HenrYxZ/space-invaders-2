@@ -6,7 +6,7 @@ import resources
 
 
 class Truck(pyglet.sprite.Sprite):
-    def __init__(self, batch, group):
+    def __init__(self, batch, group, on_extracted, on_loaded):
         super(Truck, self).__init__(
             resources.truck_l_tex,
             x=25*CELL_SIZE, y=UI_HEIGHT, batch=batch, group=group
@@ -17,8 +17,10 @@ class Truck(pyglet.sprite.Sprite):
         self.accumulated_time = 0
         self.is_moving_left = True
         self.loading = False
-        self.on_extracted = lambda: None
-        self.on_loaded = lambda: None
+        # Amount of resources inside
+        self.cargo = 0
+        self.on_extracted = on_extracted
+        self.on_loaded = on_loaded
 
     @property
     def pos(self):
@@ -40,7 +42,8 @@ class Truck(pyglet.sprite.Sprite):
                 else:
                     # Finished loading to factory
                     self.loading = False
-                    self.on_loaded()
+                    self.on_loaded(self.cargo)
+                    self.cargo = 0
                     self.image = resources.truck_l_tex
                     self.pos -= 1
                     self.is_moving_left = True
@@ -50,7 +53,7 @@ class Truck(pyglet.sprite.Sprite):
                 else:
                     # change image and start moving left
                     self.loading = False
-                    self.on_extracted()
+                    self.cargo = self.on_extracted()
                     self.image = resources.truck_tex
                     self.pos += 1
                     self.is_moving_left = False
