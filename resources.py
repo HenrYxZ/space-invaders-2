@@ -15,6 +15,9 @@ mine_tex = pyglet.resource.image("graphics/Cristales.png")
 factory_tex = pyglet.resource.image("graphics/Fabrica.png")
 enemy1_tex = pyglet.resource.image("graphics/nave1.png")
 enemy2_tex = pyglet.resource.image("graphics/nave2.png")
+laser_tex = pyglet.resource.image("graphics/disparo.png")
+laser_tex.anchor_x = laser_tex.width / 2
+laser_tex.anchor_y = laser_tex.height / 2
 
 enemy_images = [
     enemy1_tex, enemy2_tex

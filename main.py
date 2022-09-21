@@ -1,10 +1,11 @@
 import pyglet
 
 from constants import *
-from app import App
+from app import App, window
 
 
 game_app = App()
+window.push_handlers(game_app)
 
 
 def update(dt):
