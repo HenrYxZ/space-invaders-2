@@ -14,6 +14,7 @@ class Player(pyglet.sprite.Sprite):
         )
         self.scale = SCALE
         self._pos = NUM_CELLS // 2
+        self.hp = PLAYER_HP
 
     @property
     def pos(self):

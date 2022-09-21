@@ -18,6 +18,9 @@ enemy2_tex = pyglet.resource.image("graphics/nave2.png")
 laser_tex = pyglet.resource.image("graphics/disparo.png")
 laser_tex.anchor_x = laser_tex.width / 2
 laser_tex.anchor_y = laser_tex.height / 2
+alien_laser_tex = pyglet.resource.image("graphics/disparo2.png")
+alien_laser_tex.anchor_x = alien_laser_tex.width / 2
+alien_laser_tex.anchor_y = alien_laser_tex.height / 2
 
 enemy_images = [
     enemy1_tex, enemy2_tex

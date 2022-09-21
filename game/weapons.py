@@ -30,7 +30,14 @@ class Projectile(pyglet.sprite.Sprite):
 
 
 class Laser(Projectile):
-    def __init__(self, x, y, direction, batch, group):
+    def __init__(self, x, y, batch, group):
         super(Laser, self).__init__(
-            resources.laser_tex, x, y, direction, batch, group
+            resources.laser_tex, x, y, NORMAL_DIRECTION, batch, group
+        )
+
+
+class AlienLaser(Projectile):
+    def __init__(self, x, y, batch, group):
+        super(AlienLaser, self).__init__(
+            resources.alien_laser_tex, x, y, OPPOSITE_DIRECTION, batch, group
         )

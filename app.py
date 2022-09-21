@@ -41,8 +41,14 @@ class App:
                 self.game.add_load
             )
         ]
-        self.enemies = [Enemy(self.game.level, batch, foreground_group)]
         self.bullets = []
+        self.enemy_bullets = []
+        self.enemies = [
+            Enemy(
+                self.game.level, self.enemy_bullets, batch, foreground_group,
+                dynamic_group
+            )
+        ]
         self.timer = 0
         self.resources_label = pyglet.text.Label(
             f"Resources: {self.mine.resources_left}",
@@ -76,7 +82,7 @@ class App:
             # Shoot cannon
             x = self.player.x + self.player.width / 2
             y = self.player.y + self.player.height
-            laser = Laser(x, y, NORMAL_DIRECTION, batch, dynamic_group)
+            laser = Laser(x, y, batch, dynamic_group)
             self.bullets.append(laser)
 
     def update(self, dt):
@@ -101,6 +107,14 @@ class App:
                     if enemy.hp < 0:
                         enemy.dead = True
                         enemy.delete()
+
+        for bullet in self.enemy_bullets:
+            bullet.update(dt)
+            if bullet.collides(self.player):
+                self.player.hp -= 1
+                print("player hit")
+                if not self.player.hp:
+                    print("GAME OVER")
 
         # Remove dead enemies
         dead_enemies = [enemy for enemy in self.enemies if enemy.dead]
