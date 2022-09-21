@@ -8,8 +8,9 @@ import resources
 
 class Enemy(pyglet.sprite.Sprite):
     def __init__(self, level, batch, group):
+        img_idx = level % len(resources.enemy_images)
         super(Enemy, self).__init__(
-            resources.enemy_images[level],
+            resources.enemy_images[img_idx],
             x=0, y=HEIGHT+UI_HEIGHT-3*CELL_SIZE, batch=batch, group=group
         )
         self.scale = SCALE
