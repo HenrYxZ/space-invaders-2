@@ -70,8 +70,13 @@ class App:
         )
         self.time_label = pyglet.text.Label(
             f"Time: {int(self.game.time)}",
-            x=WIDTH + UI_WIDTH // 2, y=300, anchor_x='center',
-            anchor_y='center',
+            x=WIDTH+UI_WIDTH//2, y=300, anchor_x='center', anchor_y='center',
+            color=TEXT_COLOR, font_size=FONT_SIZE, bold=True,
+            batch=batch, group=ui_group
+        )
+        self.lives_label = pyglet.text.Label(
+            f"Lives: {self.player.hp}",
+            x=WIDTH+UI_WIDTH//2, y=250, anchor_x='center', anchor_y='center',
             color=TEXT_COLOR, font_size=FONT_SIZE, bold=True,
             batch=batch, group=ui_group
         )
@@ -125,6 +130,7 @@ class App:
         self.money_label.text = f"Money: ${self.game.money}"
         self.level_label.text = f"Level: {self.game.level}"
         self.time_label.text = f"Time: {int(self.game.time)}"
+        self.lives_label.text = f"Lives: {self.player.hp}"
 
 
 @window.event
