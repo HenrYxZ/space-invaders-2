@@ -103,7 +103,7 @@ class App:
             bullet.update(dt)
             for enemy in self.enemies:
                 if bullet.collides(enemy):
-                    enemy.hp -= 1
+                    enemy.hp -= bullet.damage
                     if enemy.hp < 0:
                         enemy.dead = True
                         enemy.delete()
@@ -111,7 +111,7 @@ class App:
         for bullet in self.enemy_bullets:
             bullet.update(dt)
             if bullet.collides(self.player):
-                self.player.hp -= 1
+                self.player.hp -= bullet.damage
                 print("player hit")
                 if not self.player.hp:
                     print("GAME OVER")
