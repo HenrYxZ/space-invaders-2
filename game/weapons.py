@@ -12,7 +12,9 @@ class Projectile(pyglet.sprite.Sprite):
         self.direction = direction
         self.collision_dist = (2 * PROJECTILE_RADIUS) ** 2
         self.damage = 0
+        self.dead = False
 
+    # TODO: fix this
     def collides(self, entity):
         # Use circular collider
         other_x, other_y = entity.position

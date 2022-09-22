@@ -1,5 +1,6 @@
 import pyglet
 from pyglet.window import key
+import random
 
 
 from constants import *
@@ -43,12 +44,8 @@ class App:
         ]
         self.bullets = []
         self.enemy_bullets = []
-        self.enemies = [
-            Enemy(
-                self.game.level, self.enemy_bullets, batch, foreground_group,
-                dynamic_group
-            )
-        ]
+        self.enemies = []
+        self.enemy_queue = []
         self.timer = 0
         self.resources_label = pyglet.text.Label(
             f"Resources: {self.mine.resources_left}",
@@ -90,28 +87,16 @@ class App:
             laser = Laser(x, y, batch, dynamic_group)
             self.bullets.append(laser)
 
-    def update(self, dt):
-        self.game.update(dt)
-        self.timer += dt
-        # Update periodic things
-        if self.timer >= TIME_UNIT:
-            self.timer = 0
-            for enemy in self.enemies:
-                enemy.move()
-
-        # Update trucks
-        for truck in self.trucks:
-            truck.update(dt)
-
-        # Damage from bullets
+    def update_bullets(self, dt):
         for bullet in self.bullets:
             bullet.update(dt)
             for enemy in self.enemies:
+                if enemy.dead:
+                    continue
                 if bullet.collides(enemy):
                     enemy.hp -= bullet.damage
                     if enemy.hp < 0:
                         enemy.dead = True
-                        enemy.delete()
 
         for bullet in self.enemy_bullets:
             bullet.update(dt)
@@ -121,16 +106,74 @@ class App:
                 if not self.player.hp:
                     print("GAME OVER")
 
+    def cleanup_entities(self):
         # Remove dead enemies
         dead_enemies = [enemy for enemy in self.enemies if enemy.dead]
         for dead_enemy in dead_enemies:
             self.enemies.remove(dead_enemy)
+            dead_enemy.delete()
+        # Remove dead bullets
+        dead_bullets = []
+        for bullet in self.bullets:
+            if bullet.dead:
+                dead_bullets.append(bullet)
+                continue
+            if bullet.y > WINDOW_HEIGHT:
+                bullet.dead = True
+                dead_bullets.append(bullet)
+        for dead_bullet in dead_bullets:
+            self.bullets.remove(dead_bullet)
+            dead_bullet.delete()
+        dead_bullets = []
+        for bullet in self.enemy_bullets:
+            if bullet.dead:
+                dead_bullets.append(bullet)
+                continue
+            if bullet.y < UI_HEIGHT:
+                bullet.dead = True
+                dead_bullets.append(bullet)
+        for dead_bullet in dead_bullets:
+            self.enemy_bullets.remove(dead_bullet)
+            dead_bullet.delete()
 
+    def update_labels(self):
         self.resources_label.text = f"Resources: {self.mine.resources_left}"
         self.money_label.text = f"Money: ${self.game.money}"
         self.level_label.text = f"Level: {self.game.level}"
         self.time_label.text = f"Time: {int(self.game.time)}"
         self.lives_label.text = f"Lives: {self.player.hp}"
+
+    def update(self, dt):
+        self.game.update(dt)
+        self.timer += dt
+        # Update periodic things
+        if self.timer >= TIME_UNIT:
+            self.timer = 0
+            # Update enemies
+            for enemy in self.enemies:
+                enemy.move()
+            # Spawn new enemies into queue
+            for lvl, spawn_prob in ENEMY_SPAWN_PROB[self.game.level].items():
+                if random.random() <= spawn_prob:
+                    self.enemy_queue.append(lvl)
+            # Dequeue enemies
+            if self.enemy_queue:
+                enemy_lvl = self.enemy_queue.pop(0)
+                new_enemy = Enemy(
+                    enemy_lvl, self.enemy_bullets, batch,
+                    foreground_group, dynamic_group
+                )
+                self.enemies.append(new_enemy)
+        # Update trucks
+        for truck in self.trucks:
+            truck.update(dt)
+
+        # Damage from bullets
+        self.update_bullets(dt)
+
+        self.cleanup_entities()
+
+        self.update_labels()
 
 
 @window.event
