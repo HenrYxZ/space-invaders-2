@@ -97,6 +97,7 @@ class App:
                     enemy.hp -= bullet.damage
                     if enemy.hp < 0:
                         enemy.dead = True
+                    bullet.dead = True
 
         for bullet in self.enemy_bullets:
             bullet.update(dt)
@@ -105,6 +106,7 @@ class App:
                 print("player hit")
                 if not self.player.hp:
                     print("GAME OVER")
+                bullet.dead = True
 
     def cleanup_entities(self):
         # Remove dead enemies
