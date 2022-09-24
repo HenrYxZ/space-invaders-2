@@ -12,9 +12,9 @@ class Enemy(pyglet.sprite.Sprite):
         img_idx = level % len(resources.enemy_images)
         super(Enemy, self).__init__(
             resources.enemy_images[img_idx],
-            x=0, y=HEIGHT+UI_HEIGHT-3*CELL_SIZE, batch=batch, group=group
+            x=0, y=WINDOW_HEIGHT-4*CELL_HEIGHT, batch=batch, group=group
         )
-        self.scale = SCALE
+        self.scale = 0.75 * SCALE
         self.hp = level
         self.dead = False
         self.shoot_probability = level / 20
@@ -35,7 +35,7 @@ class Enemy(pyglet.sprite.Sprite):
     def pos(self, value):
         self._pos = value
         i, j = value
-        self.position = (i * CELL_SIZE, j * CELL_SIZE + UI_HEIGHT)
+        self.position = (i * CELL_WIDTH, j * CELL_HEIGHT + UI_HEIGHT)
         x, y = self.position
         x += self.width // 2
         self.shoot_position = (x, y)

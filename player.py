@@ -9,10 +9,11 @@ import resources
 class Player(pyglet.sprite.Sprite):
     def __init__(self, batch, group):
         super(Player, self).__init__(
-            resources.player_tex, x=WIDTH//2, y=CELL_SIZE*PLAYER_ROW+UI_HEIGHT,
+            resources.player_tex,
+            x=WIDTH//2, y=CELL_HEIGHT*PLAYER_ROW+UI_HEIGHT,
             batch=batch, group=group
         )
-        self.scale = SCALE
+        self.scale = 0.75 * SCALE
         self._pos = NUM_CELLS // 2
         self.hp = PLAYER_HP
 
@@ -23,7 +24,7 @@ class Player(pyglet.sprite.Sprite):
     @pos.setter
     def pos(self, value):
         self._pos = value
-        self.x = value * CELL_SIZE
+        self.x = value * CELL_WIDTH
 
     def on_key_press(self, symbol, _):
         if symbol == key.LEFT:

@@ -9,9 +9,10 @@ class Truck(pyglet.sprite.Sprite):
     def __init__(self, batch, group, on_extracted, on_loaded):
         super(Truck, self).__init__(
             resources.truck_l_tex,
-            x=25*CELL_SIZE, y=UI_HEIGHT, batch=batch, group=group
+            x=(FACTORY_START_POS-1)*CELL_WIDTH, y=UI_HEIGHT,
+            batch=batch, group=group
         )
-        self.scale = 0.5
+        self.scale = SCALE
         self.cost = TRUCK_COST
         self._pos = 25
         self.accumulated_time = 0
@@ -28,7 +29,7 @@ class Truck(pyglet.sprite.Sprite):
 
     @pos.setter
     def pos(self, i):
-        self.x = i * CELL_SIZE
+        self.x = i * CELL_WIDTH
         self._pos = i
 
     def update(self, dt):
