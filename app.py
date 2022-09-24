@@ -98,6 +98,22 @@ class App:
                 new_shield = Shield((i, new_j), batch, foreground_group)
                 self.shields.append(new_shield)
 
+    def spawn_enemies(self):
+        # Run randoms for spawning, adding into a queue
+        for lvl, spawn_prob in ENEMY_SPAWN_PROB[self.game.level].items():
+            if random.random() <= spawn_prob:
+                self.enemy_queue.append(lvl)
+        # Dequeue enemies
+        if self.enemy_queue:
+            # Only spawn a new into the map when there's space
+            if not self.enemies or self.enemies[-1].pos[0] >= ENEMY_CELLS_WIDTH:
+                enemy_lvl = self.enemy_queue.pop(0)
+                new_enemy = Enemy(
+                    enemy_lvl, self.enemy_bullets, batch,
+                    foreground_group, dynamic_group
+                )
+                self.enemies.append(new_enemy)
+
     def update_bullets(self, dt):
         # Player Bullets
         for bullet in self.bullets:
@@ -149,6 +165,7 @@ class App:
         for dead_bullet in dead_bullets:
             self.bullets.remove(dead_bullet)
             dead_bullet.delete()
+        # Remove dead enemy bullets
         dead_bullets = []
         for bullet in self.enemy_bullets:
             if bullet.dead:
@@ -178,19 +195,7 @@ class App:
             for enemy in self.enemies:
                 enemy.move()
             # Spawn new enemies into queue
-            for lvl, spawn_prob in ENEMY_SPAWN_PROB[self.game.level].items():
-                if random.random() <= spawn_prob:
-                    self.enemy_queue.append(lvl)
-            # Dequeue enemies
-            if self.enemy_queue:
-                # Only spawn a new into the map when there's space
-                if not self.enemies or self.enemies[-1].pos[0] > 1:
-                    enemy_lvl = self.enemy_queue.pop(0)
-                    new_enemy = Enemy(
-                        enemy_lvl, self.enemy_bullets, batch,
-                        foreground_group, dynamic_group
-                    )
-                    self.enemies.append(new_enemy)
+            self.spawn_enemies()
 
         # Update trucks
         for truck in self.trucks:
