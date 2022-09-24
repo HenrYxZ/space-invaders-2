@@ -28,7 +28,7 @@ class App:
             x=WIDTH//2, y=UI_HEIGHT+HEIGHT//2,
             batch=batch, group=background_group
         )
-        self.background.scale = 0.75 * SCALE
+        self.background.scale = 0.588 * SCALE
         self.game = Game()
         self.game_ui = GameUI(batch, foreground_group)
         self.player = Player(batch, foreground_group)

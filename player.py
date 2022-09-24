@@ -13,7 +13,7 @@ class Player(pyglet.sprite.Sprite):
             x=WIDTH//2, y=CELL_HEIGHT*PLAYER_ROW+UI_HEIGHT,
             batch=batch, group=group
         )
-        self.scale = 0.75 * SCALE
+        self.scale = SCALE
         self._pos = NUM_CELLS // 2
         self.hp = PLAYER_HP
 

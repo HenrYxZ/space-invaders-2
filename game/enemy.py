@@ -15,7 +15,7 @@ class Enemy(pyglet.sprite.Sprite):
             x=0, y=WINDOW_HEIGHT-ENEMY_CELLS_HEIGHT*CELL_HEIGHT,
             batch=batch, group=group
         )
-        self.scale = 0.75 * SCALE
+        self.scale = SCALE
         self.hp = level
         self.dead = False
         self.shoot_probability = level / 20
