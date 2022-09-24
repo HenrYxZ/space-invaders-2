@@ -16,7 +16,7 @@ class Projectile(pyglet.sprite.Sprite):
 
     # TODO: fix this
     def collides(self, entity):
-        # Use circular collider
+        # collide at the middle of the enclosing cell
         other_x, other_y = entity.position
         other_x += entity.width // 2
         other_y += entity.height // 2

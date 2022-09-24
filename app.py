@@ -4,15 +4,14 @@ import random
 
 
 from constants import *
-from game import Enemy, Game, Factory, Laser, Mine, Truck
+from game import Enemy, Game, Factory, Laser, Mine, Shield, Truck
 from player import Player
 import resources
 from ui import GameUI
 
 
 window = pyglet.window.Window(
-    WIDTH + UI_WIDTH, HEIGHT + UI_HEIGHT,
-    caption="Space Invaders"
+    WINDOW_WIDTH, WINDOW_HEIGHT, caption="Space Invaders"
 )
 window.set_icon(resources.icon1, resources.icon2)
 batch = pyglet.graphics.Batch()
@@ -46,6 +45,10 @@ class App:
         self.enemy_bullets = []
         self.enemies = []
         self.enemy_queue = []
+        self.shields = []
+        self.highest_shield_positions = [
+            SHIELD_START_ROW - 1 for _ in range(NUM_CELLS)
+        ]
         self.timer = 0
         self.resources_label = pyglet.text.Label(
             f"Resources: {self.mine.resources_left}",
@@ -86,8 +89,17 @@ class App:
             y = self.player.y + self.player.height
             laser = Laser(x, y, batch, dynamic_group)
             self.bullets.append(laser)
+        if symbol == key.UP:
+            # Add shield
+            i = self.player.pos
+            new_j = self.highest_shield_positions[i] + 1
+            if new_j < SHIELD_START_ROW + SHIELD_MAX_ROWS:
+                self.highest_shield_positions[i] = new_j
+                new_shield = Shield((i, new_j), batch, foreground_group)
+                self.shields.append(new_shield)
 
     def update_bullets(self, dt):
+        # Player Bullets
         for bullet in self.bullets:
             bullet.update(dt)
             for enemy in self.enemies:
@@ -99,14 +111,21 @@ class App:
                         enemy.dead = True
                     bullet.dead = True
 
+        # Enemy Bullets
         for bullet in self.enemy_bullets:
             bullet.update(dt)
+            # Collision with player
             if bullet.collides(self.player):
                 self.player.hp -= bullet.damage
                 print("player hit")
                 if not self.player.hp:
                     print("GAME OVER")
                 bullet.dead = True
+            # Collision with shields
+            for shield in self.shields:
+                if bullet.collides(shield):
+                    shield.dead = True
+                    bullet.dead = True
 
     def cleanup_entities(self):
         # Remove dead enemies
@@ -114,6 +133,11 @@ class App:
         for dead_enemy in dead_enemies:
             self.enemies.remove(dead_enemy)
             dead_enemy.delete()
+        # Remove dead shields
+        dead_shields = [shield for shield in self.shields if shield.dead]
+        for dead_shield in dead_shields:
+            self.shields.remove(dead_shield)
+            dead_shield.delete()
         # Remove dead bullets
         dead_bullets = []
         for bullet in self.bullets:
@@ -166,6 +190,7 @@ class App:
                     foreground_group, dynamic_group
                 )
                 self.enemies.append(new_enemy)
+
         # Update trucks
         for truck in self.trucks:
             truck.update(dt)
