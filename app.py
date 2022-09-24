@@ -183,12 +183,14 @@ class App:
                     self.enemy_queue.append(lvl)
             # Dequeue enemies
             if self.enemy_queue:
-                enemy_lvl = self.enemy_queue.pop(0)
-                new_enemy = Enemy(
-                    enemy_lvl, self.enemy_bullets, batch,
-                    foreground_group, dynamic_group
-                )
-                self.enemies.append(new_enemy)
+                # Only spawn a new into the map when there's space
+                if not self.enemies or self.enemies[-1].pos[0] > 1:
+                    enemy_lvl = self.enemy_queue.pop(0)
+                    new_enemy = Enemy(
+                        enemy_lvl, self.enemy_bullets, batch,
+                        foreground_group, dynamic_group
+                    )
+                    self.enemies.append(new_enemy)
 
         # Update trucks
         for truck in self.trucks:

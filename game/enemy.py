@@ -12,7 +12,8 @@ class Enemy(pyglet.sprite.Sprite):
         img_idx = level % len(resources.enemy_images)
         super(Enemy, self).__init__(
             resources.enemy_images[img_idx],
-            x=0, y=WINDOW_HEIGHT-4*CELL_HEIGHT, batch=batch, group=group
+            x=0, y=WINDOW_HEIGHT-ENEMY_CELLS_HEIGHT*CELL_HEIGHT,
+            batch=batch, group=group
         )
         self.scale = 0.75 * SCALE
         self.hp = level
@@ -21,7 +22,7 @@ class Enemy(pyglet.sprite.Sprite):
         x, y = self.position
         x += self.width // 2
         self.shoot_position = (x, y)
-        self._pos = (0, 25)
+        self._pos = (0, NUM_CELLS - ENEMY_CELLS_HEIGHT)
         self.is_moving_left = False
         self.bullet_list = bullet_list
         self.batch = batch
@@ -50,17 +51,17 @@ class Enemy(pyglet.sprite.Sprite):
         i, j = self.pos
         # Move
         if self.is_moving_left:
-            if i == 0:
-                self.pos = (i, j - 3)
+            if i > 0:
+                self.pos = (i - 1, j)
+            else:
+                self.pos = (i, j - ENEMY_CELLS_HEIGHT)
                 self.is_moving_left = False
-            else:
-                self.pos = (i - 2, j)
         else:
-            if i >= NUM_CELLS - 3:
-                self.pos = (i, j - 3)
-                self.is_moving_left = True
+            if i < NUM_CELLS - 1:
+                self.pos = (i + 1, j)
             else:
-                self.pos = (i + 2, j)
+                self.pos = (i, j - ENEMY_CELLS_HEIGHT)
+                self.is_moving_left = True
         # Shoot
         if r <= self.shoot_probability:
             self.shoot()

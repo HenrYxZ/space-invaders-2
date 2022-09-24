@@ -29,7 +29,7 @@ class Player(pyglet.sprite.Sprite):
     def on_key_press(self, symbol, _):
         if symbol == key.LEFT:
             if self.pos > 0:
-                self.pos -= 2
+                self.pos -= 1
         elif symbol == key.RIGHT:
-            if self.pos < NUM_CELLS - 2:
-                self.pos += 2
+            if self.pos < NUM_CELLS - 1:
+                self.pos += 1
