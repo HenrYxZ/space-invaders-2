@@ -41,7 +41,6 @@ class Enemy(pyglet.sprite.Sprite):
         self.shoot_position = (x, y)
 
     def shoot(self):
-        print("shoot")
         x, y = self.shoot_position
         laser = AlienLaser(x, y, self.batch, self.laser_group)
         self.bullet_list.append(laser)

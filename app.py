@@ -117,7 +117,6 @@ class App:
             # Collision with player
             if bullet.collides(self.player):
                 self.player.hp -= bullet.damage
-                print("player hit")
                 if not self.player.hp:
                     print("GAME OVER")
                 bullet.dead = True
