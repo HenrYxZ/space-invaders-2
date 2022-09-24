@@ -50,6 +50,7 @@ class App:
             SHIELD_START_ROW - 1 for _ in range(NUM_CELLS)
         ]
         self.timer = 0
+        self.spawn_time = True     # Spawn only every two times
         self.resources_label = pyglet.text.Label(
             f"Resources: {self.mine.resources_left}",
             x=WIDTH+UI_WIDTH//2, y=400, anchor_x='center', anchor_y='center',
@@ -99,6 +100,9 @@ class App:
                 self.shields.append(new_shield)
 
     def spawn_enemies(self):
+        self.spawn_time = not self.spawn_time
+        if not self.spawn_time:
+            return
         # Run randoms for spawning, adding into a queue
         for lvl, spawn_prob in ENEMY_SPAWN_PROB[self.game.level].items():
             if random.random() <= spawn_prob:
