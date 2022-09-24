@@ -20,7 +20,7 @@ class Enemy(pyglet.sprite.Sprite):
         self.dead = False
         self.shoot_probability = level / 20
         x, y = self.position
-        x += self.width // 2
+        x += CELL_WIDTH // 2
         self.shoot_position = (x, y)
         self._pos = (0, NUM_CELLS - ENEMY_CELLS_HEIGHT)
         self.is_moving_left = False
@@ -38,11 +38,13 @@ class Enemy(pyglet.sprite.Sprite):
         i, j = value
         self.position = (i * CELL_WIDTH, j * CELL_HEIGHT + UI_HEIGHT)
         x, y = self.position
-        x += self.width // 2
+        x += CELL_WIDTH // 2
         self.shoot_position = (x, y)
 
     def shoot(self):
         x, y = self.shoot_position
+        if random.random() < 0.5:
+            x += CELL_WIDTH
         laser = AlienLaser(x, y, self.batch, self.laser_group)
         self.bullet_list.append(laser)
 
