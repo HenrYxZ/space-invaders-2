@@ -127,7 +127,7 @@ class App:
                     continue
                 if bullet.collides(enemy):
                     enemy.hp -= bullet.damage
-                    if enemy.hp < 0:
+                    if enemy.hp <= 0:
                         enemy.dead = True
                     bullet.dead = True
 
@@ -140,10 +140,17 @@ class App:
                 if not self.player.hp:
                     print("GAME OVER")
                 bullet.dead = True
+                continue
             # Collision with shields
             for shield in self.shields:
                 if bullet.collides(shield):
                     shield.dead = True
+                    bullet.dead = True
+                    continue
+            # Collision with trucks
+            for truck in self.trucks:
+                if bullet.collides(truck):
+                    truck.dead = True
                     bullet.dead = True
 
     def cleanup_entities(self):
@@ -157,6 +164,11 @@ class App:
         for dead_shield in dead_shields:
             self.shields.remove(dead_shield)
             dead_shield.delete()
+        # Remove dead trucks
+        dead_trucks = [truck for truck in self.trucks if truck.dead]
+        for dead_truck in dead_trucks:
+            self.trucks.remove(dead_truck)
+            dead_truck.delete()
         # Remove dead bullets
         dead_bullets = []
         for bullet in self.bullets:

@@ -2,6 +2,7 @@ import pyglet
 
 
 from constants import *
+from player import Player
 import resources
 
 
@@ -10,21 +11,28 @@ class Projectile(pyglet.sprite.Sprite):
         super(Projectile, self).__init__(img, x, y, batch=batch, group=group)
         self.scale = SCALE
         self.direction = direction
-        self.collision_dist = (2 * PROJECTILE_RADIUS) ** 2
         self.damage = 0
         self.dead = False
+        self.i = x // CELL_WIDTH
 
-    # TODO: fix this
     def collides(self, entity):
         # collide at the middle of the enclosing cell
-        other_x, other_y = entity.position
-        other_x += entity.width // 2
-        other_y += entity.height // 2
-        if (
-            (self.x - other_x) ** 2 + (self.y - other_y) ** 2 <=
-            self.collision_dist
-        ):
-            return True
+        if isinstance(entity.pos, tuple):
+            other_i, other_j = entity.pos
+        else:
+            other_i = entity.pos
+            other_j = (
+                PLAYER_ROW + PLAYER_CELLS_HEIGHT if isinstance(entity, Player)
+                else 0
+            )
+        if other_i == self.i:
+            y = self.y - UI_HEIGHT
+            if self.direction > 0:
+                if y >= other_j * CELL_HEIGHT + CELL_HEIGHT / 2:
+                    return True
+            else:
+                if y <= other_j * CELL_HEIGHT:
+                    return True
         return False
 
     def update(self, dt):

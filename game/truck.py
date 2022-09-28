@@ -22,6 +22,7 @@ class Truck(pyglet.sprite.Sprite):
         self.cargo = 0
         self.on_extracted = on_extracted
         self.on_loaded = on_loaded
+        self.dead = False
 
     @property
     def pos(self):
