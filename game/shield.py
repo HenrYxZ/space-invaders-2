@@ -13,5 +13,6 @@ class Shield(pyglet.sprite.Sprite):
             resources.shield_tex, x, y,
             batch=batch, group=group, usage='static'
         )
+        self.pos = pos
         self.scale = 0.25 * SCALE
         self.dead = False
