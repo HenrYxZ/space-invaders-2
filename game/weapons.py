@@ -7,13 +7,14 @@ import resources
 
 
 class Projectile(pyglet.sprite.Sprite):
-    def __init__(self, img, x, y, direction, batch, group):
+    def __init__(self, img, direction, x, y, batch, group):
         super(Projectile, self).__init__(img, x, y, batch=batch, group=group)
         self.scale = SCALE
         self.direction = direction
         self.damage = 0
         self.dead = False
         self.i = x // CELL_WIDTH
+        self.speed = PROJECTILE_SPEED
 
     def collides(self, entity):
         # collide at the middle of the enclosing cell
@@ -36,20 +37,44 @@ class Projectile(pyglet.sprite.Sprite):
         return False
 
     def update(self, dt):
-        self.y += self.direction * PROJECTILE_SPEED * dt
-
-
-class Laser(Projectile):
-    def __init__(self, x, y, batch, group):
-        super(Laser, self).__init__(
-            resources.laser_tex, x, y, NORMAL_DIRECTION, batch, group
-        )
-        self.damage = LASER_DAMAGE
+        self.y += self.direction * self.speed * dt
 
 
 class AlienLaser(Projectile):
     def __init__(self, x, y, batch, group):
         super(AlienLaser, self).__init__(
-            resources.alien_laser_tex, x, y, OPPOSITE_DIRECTION, batch, group
+            resources.alien_laser_tex, OPPOSITE_DIRECTION, x, y, batch, group
         )
         self.damage = LASER_DAMAGE
+
+
+class Laser(Projectile):
+    def __init__(self, x, y, batch, group):
+        super(Laser, self).__init__(
+            resources.laser_tex, NORMAL_DIRECTION, x, y, batch, group
+        )
+        self.damage = LASER_DAMAGE
+
+
+class Missile(Projectile):
+    def __init__(self, *args):
+        super(Missile, self).__init__(
+            resources.missile_tex, NORMAL_DIRECTION, *args
+        )
+        self.damage = MISSILE_DAMAGE
+
+
+class Nuke(Projectile):
+    def __init__(self, *args):
+        super(Nuke, self).__init__(resources.nuke_tex, NORMAL_DIRECTION, *args)
+        self.scale = 0.75
+        self.speed = PROJECTILE_SPEED * 0.6
+
+
+class Plasma(Projectile):
+    def __init__(self, *args):
+        super(Plasma, self).__init__(
+            resources.plasma_tex, NORMAL_DIRECTION, *args
+        )
+        self.scale = 0.1
+        self.damage = PLASMA_DAMAGE

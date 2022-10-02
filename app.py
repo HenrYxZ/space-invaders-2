@@ -4,7 +4,8 @@ import random
 
 
 from constants import *
-from game import Enemy, Game, Factory, Laser, Mine, Shield, Truck
+from game import Enemy, Game, Factory, Laser, Missile, Mine, Nuke, Plasma, \
+    Shield, Truck
 from player import Player
 import resources
 from ui import GameUI
@@ -19,6 +20,20 @@ background_group = pyglet.graphics.OrderedGroup(0)
 foreground_group = pyglet.graphics.OrderedGroup(1)
 dynamic_group = pyglet.graphics.OrderedGroup(2)
 ui_group = pyglet.graphics.OrderedGroup(3)
+render_settings = (batch, background_group, ui_group)
+
+WEAPONS_NUM_KEYS = {
+    key._1: Laser,
+    key._2: Missile,
+    key._3: Plasma,
+    key._4: Nuke
+}
+WEAPONS_ID = {
+    Laser: LASER_ID,
+    Missile: MISSILE_ID,
+    Plasma: PLASMA_ID,
+    Nuke: NUKE_ID
+}
 
 
 class App:
@@ -30,10 +45,12 @@ class App:
         )
         self.background.scale = 0.588 * SCALE
         self.game = Game()
-        self.game_ui = GameUI(batch, foreground_group)
         self.player = Player(batch, foreground_group)
         self.factory = Factory(batch, foreground_group)
         self.mine = Mine(batch, foreground_group)
+        self.game_ui = GameUI(
+            self.player, self.game, self.mine, render_settings
+        )
         self.trucks = [
             Truck(
                 batch, foreground_group,
@@ -51,36 +68,7 @@ class App:
         ]
         self.timer = 0
         self.spawn_time = True     # Spawn only every two times
-        self.resources_label = pyglet.text.Label(
-            f"Resources: {self.mine.resources_left}",
-            x=WIDTH+UI_WIDTH//2, y=400, anchor_x='center', anchor_y='center',
-            color=TEXT_COLOR, font_size=FONT_SIZE, bold=True,
-            batch=batch, group=ui_group
-        )
-        self.money_label = pyglet.text.Label(
-            f"Money: ${self.game.money}",
-            x=WIDTH+UI_WIDTH//2, y=350, anchor_x='center', anchor_y='center',
-            color=TEXT_COLOR, font_size=FONT_SIZE, bold=True,
-            batch=batch, group=ui_group
-        )
-        self.level_label = pyglet.text.Label(
-            f"Level: {self.game.level}",
-            x=WIDTH+UI_WIDTH//2, y=450, anchor_x='center', anchor_y='center',
-            color=TEXT_COLOR, font_size=FONT_SIZE, bold=True,
-            batch=batch, group=ui_group
-        )
-        self.time_label = pyglet.text.Label(
-            f"Time: {int(self.game.time)}",
-            x=WIDTH+UI_WIDTH//2, y=300, anchor_x='center', anchor_y='center',
-            color=TEXT_COLOR, font_size=FONT_SIZE, bold=True,
-            batch=batch, group=ui_group
-        )
-        self.lives_label = pyglet.text.Label(
-            f"Lives: {self.player.hp}",
-            x=WIDTH+UI_WIDTH//2, y=250, anchor_x='center', anchor_y='center',
-            color=TEXT_COLOR, font_size=FONT_SIZE, bold=True,
-            batch=batch, group=ui_group
-        )
+        self.current_weapon = Laser
         window.push_handlers(self.player)
 
     def on_key_press(self, symbol, _):
@@ -88,8 +76,8 @@ class App:
             # Shoot cannon
             x = self.player.x + self.player.width / 2
             y = self.player.y + self.player.height
-            laser = Laser(x, y, batch, dynamic_group)
-            self.bullets.append(laser)
+            bullet = self.current_weapon(x, y, batch, dynamic_group)
+            self.bullets.append(bullet)
         if symbol == key.UP:
             # Add shield
             i = self.player.pos
@@ -98,6 +86,11 @@ class App:
                 self.highest_shield_positions[i] = new_j
                 new_shield = Shield((i, new_j), batch, foreground_group)
                 self.shields.append(new_shield)
+        # Weapon selection
+        if symbol in WEAPONS_NUM_KEYS.keys():
+            new_weapon = WEAPONS_NUM_KEYS[symbol]
+            self.current_weapon = new_weapon
+            self.game_ui.change_selection(WEAPONS_ID[new_weapon])
 
     def spawn_enemies(self):
         self.spawn_time = not self.spawn_time
@@ -194,13 +187,6 @@ class App:
             self.enemy_bullets.remove(dead_bullet)
             dead_bullet.delete()
 
-    def update_labels(self):
-        self.resources_label.text = f"Resources: {self.mine.resources_left}"
-        self.money_label.text = f"Money: ${self.game.money}"
-        self.level_label.text = f"Level: {self.game.level}"
-        self.time_label.text = f"Time: {int(self.game.time)}"
-        self.lives_label.text = f"Lives: {self.player.hp}"
-
     def update(self, dt):
         self.game.update(dt)
         self.timer += dt
@@ -222,7 +208,7 @@ class App:
 
         self.cleanup_entities()
 
-        self.update_labels()
+        self.game_ui.update()
 
 
 @window.event

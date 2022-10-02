@@ -22,6 +22,15 @@ alien_laser_tex = pyglet.resource.image("graphics/disparo2.png")
 alien_laser_tex.anchor_x = alien_laser_tex.width / 2
 alien_laser_tex.anchor_y = alien_laser_tex.height / 2
 shield_tex = pyglet.resource.image("graphics/Shield.png")
+missile_tex = pyglet.resource.image("graphics/Misil.png")
+missile_tex.anchor_x = missile_tex.width / 2
+missile_tex.anchor_y = missile_tex.height / 2
+plasma_tex = pyglet.resource.image("graphics/plasma.png")
+plasma_tex.anchor_x = plasma_tex.width / 2
+plasma_tex.anchor_y = plasma_tex.height / 2
+nuke_tex = pyglet.resource.image("graphics/Nuke.png")
+nuke_tex.anchor_x = nuke_tex.width / 2
+nuke_tex.anchor_y = nuke_tex.height / 2
 
 enemy_images = [
     enemy1_tex, enemy2_tex
