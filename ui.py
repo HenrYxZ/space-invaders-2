@@ -81,6 +81,14 @@ class InfoLog(pyglet.shapes.Rectangle):
             color=TEXT_COLOR, font_size=FONT_SIZE, bold=True,
             batch=batch, group=ui_group
         )
+        self.buy_mode = pyglet.text.Label(
+            "-- BUY MODE --",
+            x=WIDTH + UI_WIDTH // 2, y=180, anchor_x='center',
+            anchor_y='center',
+            color=TEXT_COLOR, font_size=FONT_SIZE-2, bold=True,
+            batch=batch, group=ui_group
+        )
+        self.buy_mode.visible = False
 
 
 class GameUI:
@@ -115,6 +123,9 @@ class GameUI:
         self.selected_frame.position = (
             i * self.weapon_bar_width + label_w, 0
         )
+
+    def update_count(self, i, new_count):
+        self.weapons_ui[i].count.text = str(new_count)
 
     def update(self):
         self.info_log.resources.text = f"Resources: {self.mine.resources_left}"

@@ -34,6 +34,18 @@ WEAPONS_ID = {
     Plasma: PLASMA_ID,
     Nuke: NUKE_ID
 }
+WEAPONS_COST = {
+    Laser: LASER_PACK_COST,
+    Missile: MISSILE_PACK_COST,
+    Plasma: PLASMA_PACK_COST,
+    Nuke: NUKE_PACK_COST
+}
+WEAPONS_PACK_UNITS = {
+    Laser: LASER_PACK_UNITS,
+    Missile: MISSILE_PACK_UNITS,
+    Plasma: PLASMA_PACK_UNITS,
+    Nuke: NUKE_PACK_UNITS
+}
 
 
 class App:
@@ -69,7 +81,17 @@ class App:
         self.timer = 0
         self.spawn_time = True     # Spawn only every two times
         self.current_weapon = Laser
+        self._in_buy_mode = False
         window.push_handlers(self.player)
+
+    @property
+    def in_buy_mode(self):
+        return self._in_buy_mode
+
+    @in_buy_mode.setter
+    def in_buy_mode(self, value):
+        self._in_buy_mode = value
+        self.game_ui.info_log.buy_mode.visible = value
 
     def on_key_press(self, symbol, _):
         if symbol == key.SPACE:
@@ -86,11 +108,25 @@ class App:
                 self.highest_shield_positions[i] = new_j
                 new_shield = Shield((i, new_j), batch, foreground_group)
                 self.shields.append(new_shield)
+        if symbol == key.B:
+            self.in_buy_mode = not self.in_buy_mode
         # Weapon selection
         if symbol in WEAPONS_NUM_KEYS.keys():
-            new_weapon = WEAPONS_NUM_KEYS[symbol]
-            self.current_weapon = new_weapon
-            self.game_ui.change_selection(WEAPONS_ID[new_weapon])
+            if self.in_buy_mode:
+                weapon = WEAPONS_NUM_KEYS[symbol]
+                cost = WEAPONS_COST[weapon]
+                units = WEAPONS_PACK_UNITS[weapon]
+                weapon_id = WEAPONS_ID[weapon]
+                if self.game.money >= cost:
+                    self.game.money -= cost
+                    self.player.weapons_count[weapon_id] += units
+                    new_count = self.player.weapons_count[weapon_id]
+                    self.game_ui.update_count(weapon_id, new_count)
+                self.in_buy_mode = False
+            else:
+                new_weapon = WEAPONS_NUM_KEYS[symbol]
+                self.current_weapon = new_weapon
+                self.game_ui.change_selection(WEAPONS_ID[new_weapon])
 
     def spawn_enemies(self):
         self.spawn_time = not self.spawn_time
