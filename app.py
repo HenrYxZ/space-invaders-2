@@ -95,11 +95,15 @@ class App:
 
     def on_key_press(self, symbol, _):
         if symbol == key.SPACE:
-            # Shoot cannon
-            x = self.player.x + self.player.width / 2
-            y = self.player.y + self.player.height
-            bullet = self.current_weapon(x, y, batch, dynamic_group)
-            self.bullets.append(bullet)
+            weapon_id = WEAPONS_ID[self.current_weapon]
+            if self.player.weapons_count[weapon_id]:
+                # Shoot cannon
+                x = self.player.x + self.player.width / 2
+                y = self.player.y + self.player.height
+                bullet = self.current_weapon(x, y, batch, dynamic_group)
+                self.bullets.append(bullet)
+                self.player.weapons_count[weapon_id] -= 1
+                self.game_ui.update_count(weapon_id)
         if symbol == key.UP:
             # Add shield
             i = self.player.pos
@@ -120,8 +124,7 @@ class App:
                 if self.game.money >= cost:
                     self.game.money -= cost
                     self.player.weapons_count[weapon_id] += units
-                    new_count = self.player.weapons_count[weapon_id]
-                    self.game_ui.update_count(weapon_id, new_count)
+                    self.game_ui.update_count(weapon_id)
                 self.in_buy_mode = False
             else:
                 new_weapon = WEAPONS_NUM_KEYS[symbol]

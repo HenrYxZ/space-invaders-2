@@ -124,7 +124,8 @@ class GameUI:
             i * self.weapon_bar_width + label_w, 0
         )
 
-    def update_count(self, i, new_count):
+    def update_count(self, i):
+        new_count = self.player.weapons_count[i]
         self.weapons_ui[i].count.text = str(new_count)
 
     def update(self):
