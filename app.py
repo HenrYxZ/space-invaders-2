@@ -70,6 +70,7 @@ class App:
                 self.game.add_load
             )
         ]
+        self.trucks_queue = []
         self.bullets = []
         self.enemy_bullets = []
         self.enemies = []
@@ -92,6 +93,13 @@ class App:
     def in_buy_mode(self, value):
         self._in_buy_mode = value
         self.game_ui.info_log.buy_mode.visible = value
+
+    def create_truck(self, _):
+        new_truck = Truck(
+            batch, foreground_group,
+            self.mine.extract_resources, self.game.add_load
+        )
+        self.trucks.append(new_truck)
 
     def on_key_press(self, symbol, _):
         if symbol == key.SPACE:
@@ -132,6 +140,14 @@ class App:
                 new_weapon = WEAPONS_NUM_KEYS[symbol]
                 self.current_weapon = new_weapon
                 self.game_ui.change_selection(WEAPONS_ID[new_weapon])
+        # Buy truck
+        if self.in_buy_mode and symbol == key._0:
+            if self.game.money >= TRUCK_COST and len(self.trucks) < MAX_TRUCKS:
+                self.game.money -= TRUCK_COST
+                pyglet.clock.schedule_once(
+                    self.create_truck, TRUCK_TIME_TO_MOVE
+                )
+                self.in_buy_mode = False
 
     def spawn_enemies(self):
         self.spawn_time = not self.spawn_time

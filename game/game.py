@@ -4,7 +4,7 @@ from constants import *
 class Game:
     def __init__(self):
         self.level = 1
-        self.money = 0
+        self.money = 70
         self.time = 0
 
     def update(self, dt):
