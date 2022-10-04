@@ -176,10 +176,17 @@ class App:
                 if enemy.dead:
                     continue
                 if bullet.collides(enemy):
-                    enemy.hp -= bullet.damage
-                    if enemy.hp <= 0:
-                        enemy.dead = True
-                    bullet.dead = True
+                    if not isinstance(bullet, Nuke):
+                        enemy.hp -= bullet.damage
+                        if enemy.hp <= 0:
+                            enemy.dead = True
+                        bullet.dead = True
+                    else:
+                        # Nuke kills all enemies
+                        for e in self.enemies:
+                            e.dead = True
+                        bullet.dead = True
+                        break
 
         # Enemy Bullets
         for bullet in self.enemy_bullets:
