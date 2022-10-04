@@ -105,13 +105,15 @@ class App:
                 self.player.weapons_count[weapon_id] -= 1
                 self.game_ui.update_count(weapon_id)
         if symbol == key.UP:
-            # Add shield
-            i = self.player.pos
-            new_j = self.highest_shield_positions[i] + 1
-            if new_j < SHIELD_START_ROW + SHIELD_MAX_ROWS:
-                self.highest_shield_positions[i] = new_j
-                new_shield = Shield((i, new_j), batch, foreground_group)
-                self.shields.append(new_shield)
+            if self.game.money >= SHIELD_COST:
+                self.game.money -= SHIELD_COST
+                # Add shield
+                i = self.player.pos
+                new_j = self.highest_shield_positions[i] + 1
+                if new_j < SHIELD_START_ROW + SHIELD_MAX_ROWS:
+                    self.highest_shield_positions[i] = new_j
+                    new_shield = Shield((i, new_j), batch, foreground_group)
+                    self.shields.append(new_shield)
         if symbol == key.B:
             self.in_buy_mode = not self.in_buy_mode
         # Weapon selection
