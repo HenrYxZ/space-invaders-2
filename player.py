@@ -15,6 +15,7 @@ class Player(pyglet.sprite.Sprite):
         )
         self.scale = SCALE
         self._pos = NUM_CELLS // 2
+        self.cells_wide = 1
         self.hp = PLAYER_HP
         self.weapons_count = {
             LASER_ID: LASER_START_COUNT,

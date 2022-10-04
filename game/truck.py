@@ -15,6 +15,7 @@ class Truck(pyglet.sprite.Sprite):
         self.scale = SCALE
         self.cost = TRUCK_COST
         self._pos = 25
+        self.cells_wide = 1
         self.accumulated_time = 0
         self.is_moving_left = True
         self.loading = False

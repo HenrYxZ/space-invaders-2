@@ -23,6 +23,7 @@ class Enemy(pyglet.sprite.Sprite):
         x += CELL_WIDTH // 2
         self.shoot_position = (x, y)
         self._pos = (0, NUM_CELLS - ENEMY_CELLS_HEIGHT)
+        self.cells_wide = 2
         self.is_moving_left = False
         self.bullet_list = bullet_list
         self.batch = batch

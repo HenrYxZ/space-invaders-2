@@ -26,7 +26,7 @@ class Projectile(pyglet.sprite.Sprite):
                 PLAYER_ROW + PLAYER_CELLS_HEIGHT if isinstance(entity, Player)
                 else 0
             )
-        if other_i == self.i:
+        if other_i + entity.cells_wide > self.i >= other_i:
             y = self.y - UI_HEIGHT
             if self.direction > 0:
                 if y >= other_j * CELL_HEIGHT + CELL_HEIGHT / 2:

@@ -14,5 +14,6 @@ class Shield(pyglet.sprite.Sprite):
             batch=batch, group=group, usage='static'
         )
         self.pos = pos
+        self.cells_wide = 1
         self.scale = 0.25 * SCALE
         self.dead = False
