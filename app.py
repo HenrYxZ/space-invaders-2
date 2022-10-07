@@ -191,6 +191,13 @@ class App:
         # Enemy Bullets
         for bullet in self.enemy_bullets:
             bullet.update(dt)
+            # Collision with shields
+            for shield in self.shields:
+                if bullet.collides(shield):
+                    self.highest_shield_positions[shield.pos[0]] -= 1
+                    shield.dead = True
+                    bullet.dead = True
+                    continue
             # Collision with player
             if bullet.collides(self.player):
                 self.player.hp -= bullet.damage
@@ -198,12 +205,6 @@ class App:
                     print("GAME OVER")
                 bullet.dead = True
                 continue
-            # Collision with shields
-            for shield in self.shields:
-                if bullet.collides(shield):
-                    shield.dead = True
-                    bullet.dead = True
-                    continue
             # Collision with trucks
             for truck in self.trucks:
                 if bullet.collides(truck):

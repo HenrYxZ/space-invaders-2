@@ -17,6 +17,8 @@ class Projectile(pyglet.sprite.Sprite):
         self.speed = PROJECTILE_SPEED
 
     def collides(self, entity):
+        if self.dead:
+            return False
         # collide at the middle of the enclosing cell
         if isinstance(entity.pos, tuple):
             other_i, other_j = entity.pos
