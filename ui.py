@@ -6,6 +6,9 @@ from line_rectangle import LineRectangle
 import resources
 
 
+NUMBER_OF_WEAPONS = 4
+
+
 class WeaponBar(pyglet.shapes.Rectangle):
     def __init__(self, name, img, count, x, width, render_settings):
         batch, ui_group, front_group = render_settings
@@ -134,3 +137,9 @@ class GameUI:
         self.info_log.level.text = f"Level: {self.game.level}"
         self.info_log.time.text = f"Time: {int(self.game.time)}"
         self.info_log.lives.text = f"Lives: {self.player.hp}"
+
+    def reset(self):
+        self.update()
+        self.change_selection(LASER_ID)
+        for weapon_id in range(len(self.player.weapons_count.keys())):
+            self.update_count(weapon_id)

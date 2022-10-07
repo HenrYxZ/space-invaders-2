@@ -16,3 +16,8 @@ class Factory(pyglet.sprite.Sprite):
         self.pos = (FACTORY_START_POS, FACTORY_CELLS_HEIGHT - 1)
         self.cells_wide = 3
         self.dead = False
+
+    def reset(self):
+        self.hp = FACTORY_HP
+        self.dead = False
+        self.visible = True

@@ -40,3 +40,13 @@ class Player(pyglet.sprite.Sprite):
         elif symbol == key.RIGHT:
             if self.pos < NUM_CELLS - 1:
                 self.pos += 1
+
+    def reset(self):
+        self.pos = NUM_CELLS // 2
+        self.hp = PLAYER_HP
+        self.weapons_count = {
+            LASER_ID: LASER_START_COUNT,
+            MISSILE_ID: 0,
+            PLASMA_ID: 0,
+            NUKE_ID: 0
+        }

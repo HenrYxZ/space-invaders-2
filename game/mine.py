@@ -13,10 +13,12 @@ class Mine(pyglet.sprite.Sprite):
         )
         self.scale = SCALE
         self.resources_left = MINE_RESOURCES
-        self.empty = False
 
     def extract_resources(self):
         if self.resources_left:
             amount = min(TRUCK_LOAD, self.resources_left)
             self.resources_left -= amount
             return amount
+
+    def reset(self):
+        self.resources_left = MINE_RESOURCES

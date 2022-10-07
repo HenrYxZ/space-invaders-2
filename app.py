@@ -6,6 +6,7 @@ import random
 from constants import *
 from game import Enemy, Game, Factory, Laser, Missile, Mine, Nuke, Plasma, \
     Shield, Truck
+from game_over_dialog import GameOverDialog
 from player import Player
 import resources
 from ui import GameUI
@@ -83,7 +84,43 @@ class App:
         self.spawn_time = True     # Spawn only every two times
         self.current_weapon = Laser
         self._in_buy_mode = False
+        self.in_dialog = False
+        self.game_over_dialog = GameOverDialog(self.reset)
         window.push_handlers(self.player)
+
+    def reset(self):
+        self.game.reset()
+        self.player.reset()
+        self.factory.reset()
+        self.mine.reset()
+        # Delete trucks
+        for entity in (
+            self.trucks + self.bullets + self.enemy_bullets + self.enemies +
+            self.shields
+        ):
+            entity.delete()
+        self.trucks = [
+            Truck(
+                batch, foreground_group,
+                self.mine.extract_resources,
+                self.game.add_load
+            )
+        ]
+        self.trucks_queue = []
+        self.bullets = []
+        self.enemy_bullets = []
+        self.enemies = []
+        self.enemy_queue = []
+        self.shields = []
+        self.highest_shield_positions = [
+            SHIELD_START_ROW - 1 for _ in range(NUM_CELLS)
+        ]
+        self.timer = 0
+        self.spawn_time = True  # Spawn only every two times
+        self.current_weapon = Laser
+        self._in_buy_mode = False
+        self.in_dialog = False
+        self.game_ui.reset()
 
     @property
     def in_buy_mode(self):
@@ -102,6 +139,10 @@ class App:
         self.trucks.append(new_truck)
 
     def on_key_press(self, symbol, _):
+        if self.in_dialog:
+            self.game_over_dialog.on_key_press(symbol, _)
+            return
+
         if symbol == key.SPACE:
             weapon_id = WEAPONS_ID[self.current_weapon]
             if self.player.weapons_count[weapon_id]:
@@ -202,7 +243,7 @@ class App:
             if bullet.collides(self.player):
                 self.player.hp -= bullet.damage
                 if not self.player.hp:
-                    print("GAME OVER")
+                    self.in_dialog = True
                 bullet.dead = True
                 continue
             # Collision with trucks
@@ -217,7 +258,6 @@ class App:
                 if not self.factory.hp:
                     self.factory.dead = True
                     self.factory.visible = False
-
 
     def cleanup_entities(self):
         # Remove dead enemies
@@ -261,6 +301,9 @@ class App:
             dead_bullet.delete()
 
     def update(self, dt):
+        if self.in_dialog:
+            return
+
         self.game.update(dt)
         self.timer += dt
         # Update periodic things
@@ -284,8 +327,8 @@ class App:
 
         self.game_ui.update()
 
-
-@window.event
-def on_draw():
-    window.clear()
-    batch.draw()
+    def on_draw(self):
+        window.clear()
+        batch.draw()
+        if self.in_dialog:
+            self.game_over_dialog.draw()

@@ -14,3 +14,8 @@ class Game:
 
     def add_load(self, amount):
         self.money += amount
+
+    def reset(self):
+        self.level = 1
+        self.money = 70
+        self.time = 0
