@@ -13,5 +13,6 @@ class Factory(pyglet.sprite.Sprite):
         )
         self.scale = SCALE
         self.hp = FACTORY_HP
-        self.pos = (FACTORY_START_POS, 0)
+        self.pos = (FACTORY_START_POS, FACTORY_CELLS_HEIGHT - 1)
         self.cells_wide = 3
+        self.dead = False

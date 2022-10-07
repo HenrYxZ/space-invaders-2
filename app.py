@@ -141,7 +141,7 @@ class App:
                 self.current_weapon = new_weapon
                 self.game_ui.change_selection(WEAPONS_ID[new_weapon])
         # Buy truck
-        if self.in_buy_mode and symbol == key._0:
+        if self.in_buy_mode and symbol == key._0 and not self.factory.dead:
             if self.game.money >= TRUCK_COST and len(self.trucks) < MAX_TRUCKS:
                 self.game.money -= TRUCK_COST
                 pyglet.clock.schedule_once(
@@ -209,6 +209,14 @@ class App:
                 if bullet.collides(truck):
                     truck.dead = True
                     bullet.dead = True
+            # Collision with factory
+            if not self.factory.dead and bullet.collides(self.factory):
+                self.factory.hp -= bullet.damage
+                bullet.dead = True
+                if not self.factory.hp:
+                    self.factory.dead = True
+                    self.factory.visible = False
+
 
     def cleanup_entities(self):
         # Remove dead enemies
@@ -264,8 +272,9 @@ class App:
             self.spawn_enemies()
 
         # Update trucks
-        for truck in self.trucks:
-            truck.update(dt)
+        if not self.factory.dead:
+            for truck in self.trucks:
+                truck.update(dt)
 
         # Damage from bullets
         self.update_bullets(dt)

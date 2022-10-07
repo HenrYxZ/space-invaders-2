@@ -32,7 +32,7 @@ class Projectile(pyglet.sprite.Sprite):
                 if y >= other_j * CELL_HEIGHT + CELL_HEIGHT / 2:
                     return True
             else:
-                if y <= other_j * CELL_HEIGHT:
+                if y <= other_j * CELL_HEIGHT + CELL_HEIGHT / 2:
                     return True
         return False
 
