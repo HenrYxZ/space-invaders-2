@@ -60,7 +60,7 @@ class Enemy(pyglet.sprite.Sprite):
                 self.pos = (i, j - ENEMY_CELLS_HEIGHT)
                 self.is_moving_left = False
         else:
-            if i < NUM_CELLS - 1:
+            if i < NUM_CELLS - 2:
                 self.pos = (i + 1, j)
             else:
                 self.pos = (i, j - ENEMY_CELLS_HEIGHT)
